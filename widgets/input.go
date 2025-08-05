@@ -64,7 +64,7 @@ func (i *Input) Stream() chan string {
 }
 
 func (i *Input) KeyPress(e ui.Event) {
-	ch := strings.Replace(e.Path, "/sys/kbd/", "", -1)
+	ch := strings.ReplaceAll(e.Path, "/sys/kbd/", "")
 	if ch == "C-8" {
 		idx := len(i.Data) - 1
 		if idx > -1 {

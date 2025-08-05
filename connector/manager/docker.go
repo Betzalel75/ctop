@@ -62,13 +62,10 @@ func (w *frameWriter) Write(p []byte) (n int, err error) {
 		switch p[0] {
 		case STDIN:
 			targetWriter = w.stdin
-			break
 		case STDOUT:
 			targetWriter = w.stdout
-			break
 		case STDERR:
 			targetWriter = w.stderr
-			break
 		default:
 			return 0, wrongFrameFormat
 		}

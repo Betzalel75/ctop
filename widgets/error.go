@@ -46,10 +46,7 @@ func (w *ErrorView) Append(s string) {
 }
 
 func (w *ErrorView) Buffer() ui.Buffer {
-	offset := len(w.lines) - w.InnerHeight()
-	if offset < 0 {
-		offset = 0
-	}
+	offset := max(len(w.lines) - w.InnerHeight(), 0)
 	w.Text = strings.Join(w.lines[offset:len(w.lines)], "\n")
 	return w.Par.Buffer()
 }

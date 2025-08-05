@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bcicen/ctop/config"
-	"github.com/bcicen/ctop/container"
-	"github.com/bcicen/ctop/widgets"
-	"github.com/bcicen/ctop/widgets/menu"
+	"github.com/Betzalel75/ctop/config"
+	"github.com/Betzalel75/ctop/container"
+	"github.com/Betzalel75/ctop/widgets"
+	"github.com/Betzalel75/ctop/widgets/menu"
 	ui "github.com/gizak/termui"
 	"github.com/pkg/browser"
 )
@@ -17,21 +17,36 @@ import (
 type MenuFn func() MenuFn
 
 var helpDialog = []menu.Item{
-	{"<enter> - open container menu", ""},
-	{"", ""},
-	{"[a] - toggle display of all containers", ""},
-	{"[f] - filter displayed containers", ""},
-	{"[h] - open this help dialog", ""},
-	{"[H] - toggle ctop header", ""},
-	{"[s] - select container sort field", ""},
-	{"[r] - reverse container sort order", ""},
-	{"[o] - open single view", ""},
-	{"[l] - view container logs ([t] to toggle timestamp when open)", ""},
-	{"[e] - exec shell", ""},
-	{"[w] - open browser (first port is http)", ""},
-	{"[c] - configure columns", ""},
-	{"[S] - save current configuration to file", ""},
-	{"[q] - exit ctop", ""},
+	{Val: "<enter> - open container menu (Running view)", Label: ""},
+	{Val: "", Label: ""},
+	{Val: "[1] - switch to Running view", Label: ""},
+	{Val: "[2] - switch to All view", Label: ""},
+	{Val: "[tab] - toggle between Running/All views", Label: ""},
+	{Val: "", Label: ""},
+	{Val: "Running view controls:", Label: ""},
+	{Val: "Arrow keys / j,k - navigate containers", Label: ""},
+	{Val: "[a] - toggle display of all containers", Label: ""},
+	{Val: "[f] - filter displayed containers", Label: ""},
+	{Val: "[s] - select container sort field", Label: ""},
+	{Val: "[r] - reverse container sort order", Label: ""},
+	{Val: "[o] - open single view", Label: ""},
+	{Val: "[l] - view container logs", Label: ""},
+	{Val: "[e] - exec shell", Label: ""},
+	{Val: "[w] - open browser", Label: ""},
+	{Val: "", Label: ""},
+	{Val: "All view controls:", Label: ""},
+	{Val: "Arrow keys / j,k - navigate menu/list", Label: ""},
+	{Val: "<enter> - select menu item / confirm", Label: ""},
+	{Val: "<space> - toggle item selection", Label: ""},
+	{Val: "[d] - delete selected items", Label: ""},
+	{Val: "[r] - refresh current list", Label: ""},
+	{Val: "[q] - back to menu / exit", Label: ""},
+	{Val: "", Label: ""},
+	{Val: "[h] - open this help dialog", Label: ""},
+	{Val: "[H] - toggle ctop header", Label: ""},
+	{Val: "[c] - configure columns", Label: ""},
+	{Val: "[S] - save current configuration to file", Label: ""},
+	{Val: "[q] - exit ctop", Label: ""},
 }
 
 func HelpMenu() MenuFn {
@@ -97,7 +112,7 @@ func SortMenu() MenuFn {
 	m.BorderLabel = "Sort Field"
 
 	for _, field := range container.SortFields() {
-		m.AddItems(menu.Item{field, ""})
+		m.AddItems(menu.Item{Val: field, Label: ""})
 	}
 
 	// set cursor position to current sort field
@@ -153,7 +168,7 @@ func ColumnsMenu() MenuFn {
 			} else {
 				txt += disabledStr
 			}
-			m.AddItems(menu.Item{col.Name, txt})
+			m.AddItems(menu.Item{Val: col.Name, Label: txt})
 		}
 	}
 
@@ -214,8 +229,8 @@ func ContainerMenu() MenuFn {
 	m.BorderLabel = "Menu"
 
 	items := []menu.Item{
-		menu.Item{Val: "single", Label: "[o] single view"},
-		menu.Item{Val: "logs", Label: "[l] log view"},
+		{Val: "single", Label: "[o] single view"},
+		{Val: "logs", Label: "[l] log view"},
 	}
 
 	if c.Meta["state"] == "running" {
@@ -414,8 +429,8 @@ func Confirm(txt string, fn func()) MenuFn {
 		m.SubText = txt
 
 		items := []menu.Item{
-			menu.Item{Val: "cancel", Label: "[c]ancel"},
-			menu.Item{Val: "yes", Label: "[y]es"},
+			{Val: "cancel", Label: "[c]ancel"},
+			{Val: "yes", Label: "[y]es"},
 		}
 
 		var response bool

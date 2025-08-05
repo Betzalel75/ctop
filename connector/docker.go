@@ -9,9 +9,9 @@ import (
 	"github.com/op/go-logging"
 	"github.com/hako/durafmt"
 
-	"github.com/bcicen/ctop/connector/collector"
-	"github.com/bcicen/ctop/connector/manager"
-	"github.com/bcicen/ctop/container"
+	"github.com/Betzalel75/ctop/connector/collector"
+	"github.com/Betzalel75/ctop/connector/manager"
+	"github.com/Betzalel75/ctop/container"
 	api "github.com/fsouza/go-dockerclient"
 )
 
@@ -76,7 +76,9 @@ func NewDocker() (Connector, error) {
 
 // Docker implements Connector
 func (cm *Docker) Wait() struct{} { return <-cm.closed }
-
+func (cm *Docker) GetClient() *api.Client {
+	return cm.client
+}
 // Docker events watcher
 func (cm *Docker) watchEvents() {
 	log.Info("docker event listener starting")
@@ -144,18 +146,16 @@ func portsFormat(ports map[api.Port][]api.PortBinding) string {
 
 func webPort(ports map[api.Port][]api.PortBinding) string {
 	for _, v := range ports {
-		if len(v) == 0 {
-			continue
-		}
-		for _, binding := range v {
-			publishedIp := binding.HostIP
-			if publishedIp == "0.0.0.0" {
-				publishedIp = "localhost"
-			}
-			publishedWebPort := fmt.Sprintf("%s:%s", publishedIp, binding.HostPort)
-			return publishedWebPort
-		}
-	}
+        if len(v) > 0 {
+            binding := v[0]
+            publishedIp := binding.HostIP
+            if publishedIp == "0.0.0.0" {
+                publishedIp = "localhost"
+            }
+            publishedWebPort := fmt.Sprintf("%s:%s", publishedIp, binding.HostPort)
+            return publishedWebPort
+        }
+    }
 	return ""
 }
 
@@ -196,7 +196,7 @@ func (cm *Docker) refresh(c *container.Container) {
 }
 
 func (cm *Docker) inspect(id string) (insp *api.Container, found bool, failed bool) {
-	c, err := cm.client.InspectContainer(id)
+	c, err := cm.client.InspectContainerWithOptions(api.InspectContainerOptions{ID: id})
 	if err != nil {
 		if _, notFound := err.(*api.NoSuchContainer); notFound {
 			return c, false, false

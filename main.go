@@ -7,12 +7,12 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/bcicen/ctop/config"
-	"github.com/bcicen/ctop/connector"
-	"github.com/bcicen/ctop/container"
-	"github.com/bcicen/ctop/cwidgets/compact"
-	"github.com/bcicen/ctop/logging"
-	"github.com/bcicen/ctop/widgets"
+	"github.com/Betzalel75/ctop/config"
+	"github.com/Betzalel75/ctop/connector"
+	"github.com/Betzalel75/ctop/container"
+	"github.com/Betzalel75/ctop/cwidgets/compact"
+	"github.com/Betzalel75/ctop/logging"
+	"github.com/Betzalel75/ctop/widgets"
 	ui "github.com/gizak/termui"
 	tm "github.com/nsf/termbox-go"
 )
@@ -30,6 +30,7 @@ var (
 	errView *widgets.ErrorView
 
 	versionStr = fmt.Sprintf("ctop version %v, build %v %v", version, build, goVersion)
+	containerView *widgets.ContainerView
 )
 
 func main() {
@@ -101,11 +102,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+			
 	cursor = &GridCursor{cSuper: cSuper}
 	cGrid = compact.NewCompactGrid()
 	header = widgets.NewCTopHeader()
 	status = widgets.NewStatusLine()
 	errView = widgets.NewErrorView()
+	
+	// Créer le widget ContainerView qui contient Running et All
+	containerView = widgets.NewContainerView(cGrid, header, cSuper)
+	containerView.X = 0
+	containerView.Y = 0
 
 	for {
 		exit := Display()
@@ -135,8 +142,6 @@ func panicExit() {
 	if r := recover(); r != nil {
 		Shutdown()
 		panic(r)
-		fmt.Printf("error: %s\n", r)
-		os.Exit(1)
 	}
 }
 

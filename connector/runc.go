@@ -5,15 +5,14 @@ package connector
 
 import (
 	"errors"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 	"time"
 
-	"github.com/bcicen/ctop/connector/collector"
-	"github.com/bcicen/ctop/connector/manager"
-	"github.com/bcicen/ctop/container"
+	"github.com/Betzalel75/ctop/connector/collector"
+	"github.com/Betzalel75/ctop/connector/manager"
+	"github.com/Betzalel75/ctop/container"
 	"github.com/opencontainers/runc/libcontainer"
 )
 
@@ -38,7 +37,7 @@ func NewRuncOpts() (RuncOpts, error) {
 	opts.root = abs
 
 	// ensure runc root path is readable
-	_, err = ioutil.ReadDir(opts.root)
+	_, err = os.ReadDir(opts.root)
 	if err != nil {
 		return opts, err
 	}
@@ -149,7 +148,7 @@ func (cm *Runc) refresh(id string) {
 
 // Read runc root, creating any new containers
 func (cm *Runc) refreshAll() {
-	list, err := ioutil.ReadDir(cm.opts.root)
+	list, err := os.ReadDir(cm.opts.root)
 	if err != nil {
 		log.Errorf("%s (%T)", err.Error(), err)
 		close(cm.closed)

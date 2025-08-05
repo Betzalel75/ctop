@@ -1,8 +1,8 @@
 package compact
 
 import (
-	"github.com/bcicen/ctop/config"
-	"github.com/bcicen/ctop/models"
+	"github.com/Betzalel75/ctop/config"
+	"github.com/Betzalel75/ctop/models"
 
 	ui "github.com/gizak/termui"
 )

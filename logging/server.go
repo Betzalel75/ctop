@@ -38,7 +38,7 @@ func StartServer() {
 		for {
 			conn, err := server.ln.Accept()
 			if err != nil {
-				if err, ok := err.(net.Error); ok && err.Temporary() {
+				if err, ok := err.(net.Error); ok && err.Timeout() {
 					continue
 				}
 				return

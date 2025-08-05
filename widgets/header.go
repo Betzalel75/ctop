@@ -41,13 +41,6 @@ func (c *CTopHeader) Height() int {
 	return c.bg.Height
 }
 
-func headerBgBordered() *ui.Par {
-	bg := ui.NewPar("")
-	bg.X = 1
-	bg.Height = 3
-	bg.Bg = ui.ThemeAttr("header.bg")
-	return bg
-}
 
 func headerBg() *ui.Par {
 	bg := ui.NewPar("")

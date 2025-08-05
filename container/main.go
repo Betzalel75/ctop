@@ -1,12 +1,12 @@
 package container
 
 import (
-	"github.com/bcicen/ctop/connector/collector"
-	"github.com/bcicen/ctop/connector/manager"
-	"github.com/bcicen/ctop/cwidgets"
-	"github.com/bcicen/ctop/cwidgets/compact"
-	"github.com/bcicen/ctop/logging"
-	"github.com/bcicen/ctop/models"
+	"github.com/Betzalel75/ctop/connector/collector"
+	"github.com/Betzalel75/ctop/connector/manager"
+	"github.com/Betzalel75/ctop/cwidgets"
+	"github.com/Betzalel75/ctop/cwidgets/compact"
+	"github.com/Betzalel75/ctop/logging"
+	"github.com/Betzalel75/ctop/models"
 )
 
 var (

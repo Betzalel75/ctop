@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bcicen/ctop/connector/collector"
-	"github.com/bcicen/ctop/connector/manager"
-	"github.com/bcicen/ctop/container"
+	"github.com/Betzalel75/ctop/connector/collector"
+	"github.com/Betzalel75/ctop/connector/manager"
+	"github.com/Betzalel75/ctop/container"
 	"github.com/jgautheron/codename-generator"
 	"github.com/nu7hatch/gouuid"
 )

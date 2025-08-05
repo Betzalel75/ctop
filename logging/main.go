@@ -50,7 +50,7 @@ func (c *CTopLogger) Status(s string)        { c.addStatus(statusMsg{s, false}) 
 func (c *CTopLogger) StatusErr(err error)    { c.addStatus(statusMsg{err.Error(), true}) }
 func (c *CTopLogger) addStatus(sm statusMsg) { c.sLog = append(c.sLog, sm) }
 
-func (c *CTopLogger) Statusf(s string, a ...interface{}) { c.Status(fmt.Sprintf(s, a...)) }
+func (c *CTopLogger) Statusf(s string, a ...any) { c.Status(fmt.Sprintf(s, a...)) }
 
 func Init() *CTopLogger {
 	if Log == nil {
