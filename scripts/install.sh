@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # a simple install script for ctop
 
+set -euo pipefail
+IFS=$'\n\t'
+
 KERNEL=$(uname -s)
 
 # Color definitions (BLUE is defined but unused in the original script)
@@ -36,6 +39,32 @@ function extract_url() {
       ;;
     esac
   done <<< "$*"
+}
+
+exec_cmd() {
+    local url="$1"
+    local output_file="$2"
+    
+    # Check if wget is installed
+    if command -v wget &> /dev/null; then
+        echo "Using wget..."
+        if [ -n "$output_file" ]; then
+            wget -q "$url" -O "$output_file"
+        else
+            wget -q --show-progress "$url"
+        fi
+    
+    elif command -v curl &> /dev/null; then
+        echo "Using curl..."
+        if [ -n "$output_file" ]; then
+            curl "$url" -o "$output_file"
+        else
+            curl -# -O "$url"
+        fi
+    else
+        log_error "Error: Neither wget nor curl are installed."
+        exit 1
+    fi
 }
 
 case $KERNEL in
@@ -77,7 +106,7 @@ resp=$(curl -s https://api.github.com/repos/Betzalel75/ctop/releases/latest)
 
 output "fetching release checksums"
 checksum_url=$(extract_url sha256sums.txt "$resp")
-wget -q "$checksum_url" -O sha256sums.txt
+exec_cmd "$checksum_url" "sha256sums.txt"
 
 # skip if latest already installed
 cur_ctop=$(command -v ctop 2> /dev/null)
@@ -91,7 +120,7 @@ fi
 
 output "fetching latest ctop"
 url=$(extract_url "$MATCH_BUILD" "$resp")
-wget -q --show-progress "$url"
+exec_cmd "$url"
 (sha256sum -c --quiet --ignore-missing sha256sums.txt) || exit 1
 
 output "installing to /usr/local/bin"
