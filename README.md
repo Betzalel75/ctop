@@ -2,7 +2,8 @@
 
 #
 
-![release][release]
+![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+![release](https://img.shields.io/github/v/release/Betzalel75/ctop)
 
 Enhanced fork of ctop with additional features
 
@@ -30,7 +31,37 @@ make build
 sudo mv ctop /usr/local/bin/
 ```
 
-### Pre-built Binaries (Linux)
+### Pre-built Binaries (Linux/macOS)
+
+
+**curl :**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | sh
+````
+
+**wget :**
+
+```bash
+wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | sh
+```
+
+---
+
+## 🧹 Uninstallation
+
+**curl :**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | sh
+```
+
+**wget :**
+
+```bash
+wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | sh
+```
+
 
 Download the latest binary for Linux amd64:
 

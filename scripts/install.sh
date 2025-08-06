@@ -3,11 +3,20 @@
 
 KERNEL=$(uname -s)
 
-function output() { echo -e "\033[32mctop-install\033[0m $@"; }
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+function log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1" }
+
+function output() { echo -e "${GREEN}[ctop-install]${NC} $@"; }
 
 function command_exists() {
   command -v "$@" > /dev/null 2>&1
 }
+
 
 # extract github download url matching pattern
 function extract_url() {
@@ -41,10 +50,12 @@ done
 [ "$req_failed" == 1 ] && exit 1
 
 sh_c='sh -c'
-if [ "$CURRENT_USER" != 'root' ]; then
+if [[ $EUID -ne 0 ]]; then
   if command_exists sudo; then
+      log_warning "sudo is required to install ctop"
     sh_c='sudo -E sh -c'
   elif command_exists su; then
+      log_warning "su is required to install ctop"
     sh_c='su -c'
   else
     output "Error: this installer needs the ability to run commands as root. We are unable to find either "sudo" or "su" available to make this happen."
