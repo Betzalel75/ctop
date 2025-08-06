@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"os/user"
+	"runtime"
 )
 
 // Capitalize the first letter of a string
@@ -35,34 +36,44 @@ func isValid(f rune) bool {
 }
 
 func CheckDockerPermissions() (bool, string) {
-	// Step 1: Check if the 'docker' command exists in the user's PATH
+	// Step 1: Check if the 'docker' command exists in the user's PATH (cross-platform)
 	_, err := exec.LookPath("docker")
 	if err != nil {
 		return false, "The 'docker' command was not found. Please ensure Docker is installed."
 	}
 
-	// Step 2: Check if the user is in the 'docker' group
-	currentUser, err := user.Current()
-	if err != nil {
-		return false, fmt.Sprintf("Error getting the current user: %v", err)
-	}
-
-	groups, err := currentUser.GroupIds()
-	if err != nil {
-		return false, fmt.Sprintf("Error getting user's groups: %v", err)
-	}
-
-	for _, groupID := range groups {
-		group, err := user.LookupGroupId(groupID)
+	// Step 2: Platform-specific permission checks
+	switch runtime.GOOS {
+	case "linux": // Linux
+		currentUser, err := user.Current()
 		if err != nil {
-			// We can safely ignore lookup errors, as we may not have permissions
-			// to look up all groups.
-			continue
+			return false, fmt.Sprintf("Error getting the current user: %v", err)
 		}
-		if group.Name == "docker" {
-			return true, "The user has permissions to run Docker."
-		}
-	}
 
-	return false, "The user is not in the 'docker' group. To add them, run 'sudo usermod -aG docker <your_username>' and then log out and log back in."
+		groups, err := currentUser.GroupIds()
+		if err != nil {
+			return false, fmt.Sprintf("Error getting user's groups: %v", err)
+		}
+
+		for _, groupID := range groups {
+			group, err := user.LookupGroupId(groupID)
+			if err != nil {
+				continue
+			}
+			if group.Name == "docker" {
+				return true, "The user has permissions to run Docker."
+			}
+		}
+
+		return false, "The user is not in the 'docker' group. To add them, run 'sudo usermod -aG docker <your_username>' and then log out and log back in."
+
+	case "darwin": // macOS (Docker Desktop)
+		return true, "Assuming the user has Docker permissions (Docker Desktop manages this)."
+
+	case "windows": // Windows (Docker Desktop)
+		return true, "Assuming the user has Docker permissions (Docker Desktop manages this)."
+
+	default:
+		return false, fmt.Sprintf("Unsupported operating system: %s", runtime.GOOS)
+	}
 }
