@@ -37,13 +37,13 @@ sudo mv ctop /usr/local/bin/
 **curl :**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | sh
-````
+curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | bash
+```
 
 **wget :**
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | sh
+wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/install.sh | bash
 ```
 
 ---
@@ -53,13 +53,13 @@ wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/insta
 **curl :**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | sh
+curl -fsSL https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | bash
 ```
 
 **wget :**
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | sh
+wget -qO- https://raw.githubusercontent.com/Betzalel75/ctop/master/scripts/uninstall.sh | bash
 ```
 
 

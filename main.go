@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	utils "github.com/Betzalel75/ctop/dtop/utils"
 	"runtime"
 	"strings"
 
@@ -29,11 +30,16 @@ var (
 	status  *widgets.StatusLine
 	errView *widgets.ErrorView
 
-	versionStr = fmt.Sprintf("ctop version %v, build %v %v", version, build, goVersion)
+	versionStr    = fmt.Sprintf("ctop version %v, build %v %v", version, build, goVersion)
 	containerView *widgets.ContainerView
 )
 
 func main() {
+	// Check if docker is installed and current user has permission to run docker
+	if ok, err := utils.CheckDockerPermissions(); !ok {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	defer panicExit()
 
 	// parse command line arguments
@@ -102,13 +108,13 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-			
+
 	cursor = &GridCursor{cSuper: cSuper}
 	cGrid = compact.NewCompactGrid()
 	header = widgets.NewCTopHeader()
 	status = widgets.NewStatusLine()
 	errView = widgets.NewErrorView()
-	
+
 	// Créer le widget ContainerView qui contient Running et All
 	containerView = widgets.NewContainerView(cGrid, header, cSuper)
 	containerView.X = 0
