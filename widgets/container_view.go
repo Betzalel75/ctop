@@ -35,21 +35,30 @@ func NewContainerView(grid *compact.CompactGrid,
 
 func (cv *ContainerView) Buffer() ui.Buffer {
 	buf := cv.Block.Buffer()
+	
+	// Afficher le header en premier
+    if cv.Header != nil {
+        headerBuf := cv.Header.Buffer()
+        buf.Merge(headerBuf)
+    }
 
 	// Calculer les dimensions pour chaque widget (50% chacun)
 	halfWidth := cv.Width / 2
 
+	// Position Y après le header (1 ligne pour le header + 1 ligne d'espace)
+    yOffset := 1
+	
 	// Positionner le widget Running à gauche
 	cv.RunningWidget.X = cv.X
-	cv.RunningWidget.Y = cv.Y
-	cv.RunningWidget.Width = halfWidth
-	cv.RunningWidget.Height = cv.Height
-
-	// Positionner le widget All à droite
-	cv.AllWidget.X = cv.X + halfWidth
-	cv.AllWidget.Y = cv.Y
-	cv.AllWidget.Width = cv.Width - halfWidth
-	cv.AllWidget.Height = cv.Height
+    cv.RunningWidget.Y = cv.Y + yOffset
+    cv.RunningWidget.Width = halfWidth
+    cv.RunningWidget.Height = cv.Height - yOffset - 1 // -1 pour la status line
+    
+    // Positionner le widget All à droite
+    cv.AllWidget.X = cv.X + halfWidth
+    cv.AllWidget.Y = cv.Y + yOffset
+    cv.AllWidget.Width = cv.Width - halfWidth
+    cv.AllWidget.Height = cv.Height - yOffset - 1 // -1 pour la status line
 	
 	if cv.activeWidget == "running" {
 		cv.RunningWidget.BorderFg = ui.ThemeAttr("status.ok") // Vert pour actif

@@ -2,134 +2,119 @@
 
 #
 
-![release][release] ![homebrew][homebrew] ![macports][macports] ![scoop][scoop]
+![release][release]
 
-Top-like interface for container metrics
+Enhanced fork of ctop with additional features
 
 `ctop` provides a concise and condensed overview of real-time metrics for multiple containers:
 <p align="center"><img src="_docs/img/grid.gif" alt="ctop"/></p>
 
-as well as a [single container view][single_view] for inspecting a specific container.
+This fork maintains all original functionality while adding:
+- Improved container management interface
+- Additional viewing options
+- Enhanced navigation controls
+- Extended filtering capabilities
 
-`ctop` comes with built-in support for Docker and runC; connectors for other container and cluster systems are planned for future releases.
+## Installation
 
-## Install
+### From Source (Recommended)
 
-Fetch the [latest release](https://github.com/bcicen/ctop/releases) for your platform:
+#### Prerequisites
+- Go 1.24+
+- Git
 
-#### Debian/Ubuntu
-
-Maintained by a [third party](https://packages.azlux.fr/)
 ```bash
-sudo apt-get install ca-certificates curl gnupg lsb-release
-curl -fsSL https://azlux.fr/repo.gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/azlux-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/azlux-archive-keyring.gpg] http://packages.azlux.fr/debian \
-  $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azlux.list >/dev/null
-sudo apt-get update
-sudo apt-get install docker-ctop
+git clone https://github.com/Betzalel75/ctop.git
+cd ctop
+make build
+sudo mv ctop /usr/local/bin/
 ```
 
-#### Arch
+### Pre-built Binaries (Linux)
+
+Download the latest binary for Linux amd64:
 
 ```bash
-sudo pacman -S ctop
-```
-
-_`ctop` is also available for Arch in the [AUR](https://aur.archlinux.org/packages/ctop-bin/)_
-
-
-#### Linux (Generic)
-
-```bash
-sudo wget https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-linux-amd64 -O /usr/local/bin/ctop
+sudo wget https://github.com/Betzalel75/ctop/releases/download/vX.X.X/ctop-X.X.X-linux-amd64 -O /usr/local/bin/ctop
 sudo chmod +x /usr/local/bin/ctop
 ```
 
-#### OS X
-
-```bash
-brew install ctop
-```
-or
-```bash
-sudo port install ctop
-```
-or
-```bash
-sudo curl -Lo /usr/local/bin/ctop https://github.com/bcicen/ctop/releases/download/v0.7.7/ctop-0.7.7-darwin-amd64
-sudo chmod +x /usr/local/bin/ctop
-```
-
-#### Windows
-
-`ctop` is available in [scoop](https://scoop.sh/):
-
-```powershell
-scoop install ctop
-```
-
-#### Docker
+### Docker
 
 ```bash
 docker run --rm -ti \
-  --name=ctop \
-  --volume /var/run/docker.sock:/var/run/docker.sock:ro \
-  quay.io/vektorlab/ctop:latest
+--name=ctop \
+--volume /var/run/docker.sock:/var/run/docker.sock:ro \
+ghcr.io/Betzalel75/ctop:latest
 ```
 
 ## Building
 
-Build steps can be found [here][build].
+Build steps:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Betzalel75/ctop.git
+cd ctop
+```
+
+2. Build for your current platform:
+```bash
+make build
+```
+
+3. For cross-platform builds:
+```bash
+make build-all
+```
+
+Build artifacts will be placed in the `_build` directory.
+
+## New Features
+
+This fork includes several enhancements over the original ctop:
+
+- **Extended Container Management**:
+  - Bulk operations for containers/images/volumes
+  - Advanced filtering options
+
+- **Improved UI**:
+  - Dual-pane interface (Running/All views)
+  - Better pagination support
+  - Enhanced help system
+
+- **Additional Functionality**:
+  - Image publishing tools
+  - Volume management
+  - Extended container actions
 
 ## Usage
 
-`ctop` requires no arguments and uses Docker host variables by default. See [connectors][connectors] for further configuration options.
+Basic usage remains the same as original ctop:
 
-### Config file
+```bash
+ctop
+```
 
-While running, use `S` to save the current filters, sort field, and other options to a default config path (`~/.config/ctop/config` on XDG systems, else `~/.ctop`).
+### New Keybindings
 
-Config file values will be loaded and applied the next time `ctop` is started.
+| Key | Action |
+|-----|--------|
+| <kbd>tab</kbd> | Toggle between Running/All views |
+| <kbd>1</kbd> | Switch to Running view |
+| <kbd>2</kbd> | Switch to All view |
+| <kbd>d</kbd> (All view) | Delete selected items |
+| <kbd>space</kbd> (All view) | Toggle item selection |
 
-### Options
+## Contributing
 
-Option | Description
---- | ---
-`-a`	| show active containers only
-`-f <string>` | set an initial filter string
-`-h`	| display help dialog
-`-i`  | invert default colors
-`-r`	| reverse container sort order
-`-s`  | select initial container sort field
-`-v`	| output version information and exit
+Contributions are welcome! Please open an issue or pull request on GitHub.
 
-### Keybindings
+## License
 
-|           Key            | Action                                                     |
-| :----------------------: | ---------------------------------------------------------- |
-| <kbd>&lt;ENTER&gt;</kbd> | Open container menu                                        |
-|       <kbd>a</kbd>       | Toggle display of all (running and non-running) containers |
-|       <kbd>f</kbd>       | Filter displayed containers (`esc` to clear when open)     |
-|       <kbd>H</kbd>       | Toggle ctop header                                         |
-|       <kbd>h</kbd>       | Open help dialog                                           |
-|       <kbd>s</kbd>       | Select container sort field                                |
-|       <kbd>r</kbd>       | Reverse container sort order                               |
-|       <kbd>o</kbd>       | Open single view                                           |
-|       <kbd>l</kbd>       | View container logs (`t` to toggle timestamp when open)    |
-|       <kbd>e</kbd>       | Exec Shell                                                 |
-|       <kbd>c</kbd>       | Configure columns                                          |
-|       <kbd>S</kbd>       | Save current configuration to file                         |
-|       <kbd>q</kbd>       | Quit ctop                                                  |
+MIT - See [LICENSE](LICENSE) file
 
-[build]: _docs/build.md
-[connectors]: _docs/connectors.md
-[single_view]: _docs/single.md
-[release]: https://img.shields.io/github/release/bcicen/ctop.svg "ctop"
-[homebrew]: https://img.shields.io/homebrew/v/ctop.svg "ctop"
-[macports]: https://repology.org/badge/version-for-repo/macports/ctop.svg?header=macports "ctop"
-[scoop]: https://img.shields.io/scoop/v/ctop?bucket=main "ctop"
+## Acknowledgments
 
-## Alternatives
+This project is a fork of the original [ctop](https://github.com/bcicen/ctop) by bcicen.
 
-See [Awesome Docker list](https://github.com/veggiemonk/awesome-docker/blob/master/README.md#terminal) for similar tools to work with Docker. 

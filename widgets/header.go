@@ -62,7 +62,7 @@ func (c *CTopHeader) SetFilter(val string) {
 		c.Filter.Text = fmt.Sprintf("filter: %s", val)
 	}
 }
-
+// Header
 func timeStr() string {
 	ts := time.Now().Local().Format("15:04:05 MST")
 	return fmt.Sprintf("ctop - %s", ts)

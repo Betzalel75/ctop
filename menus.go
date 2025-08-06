@@ -17,7 +17,8 @@ import (
 type MenuFn func() MenuFn
 
 var helpDialog = []menu.Item{
-	{Val: "<enter> - open container menu (Running view)", Label: ""},
+	{Val: "Navigation:", Label: ""},
+	{Val: "<Enter> - open container menu (Running view)", Label: ""},
 	{Val: "", Label: ""},
 	{Val: "[1] - switch to Running view", Label: ""},
 	{Val: "[2] - switch to All view", Label: ""},
@@ -42,6 +43,7 @@ var helpDialog = []menu.Item{
 	{Val: "[r] - refresh current list", Label: ""},
 	{Val: "[q] - back to menu / exit", Label: ""},
 	{Val: "", Label: ""},
+	{Val: "Global:", Label: ""},
 	{Val: "[h] - open this help dialog", Label: ""},
 	{Val: "[H] - toggle ctop header", Label: ""},
 	{Val: "[c] - configure columns", Label: ""},
@@ -57,6 +59,43 @@ func HelpMenu() MenuFn {
 	m := menu.NewMenu()
 	m.BorderLabel = "Help"
 	m.AddItems(helpDialog...)
+
+	// Activer le défilement si nécessaire
+	m.Selectable = true
+	scrollOffset := 0
+
+	// Calculer le nombre d'éléments visibles
+	visibleItems := func() int {
+		return (ui.TermHeight() - 4) / 2 // -4 pour bordures et marges
+	}
+
+	// Fonction de rendu avec défilement
+    renderHelp := func() {
+        ui.Clear()
+        // Afficher seulement les éléments visibles
+        visible := helpDialog[scrollOffset:min(scrollOffset+visibleItems(), len(helpDialog))]
+        m.ClearItems()
+        m.AddItems(visible...)
+        ui.Render(m)
+    }
+
+    // Gestion des touches
+    HandleKeys("up", func() {
+        if scrollOffset > 0 {
+            scrollOffset--
+            renderHelp()
+        }
+    })
+    
+    HandleKeys("down", func() {
+        if scrollOffset < len(helpDialog)-visibleItems() {
+            scrollOffset++
+            renderHelp()
+        }
+    })
+    
+    HandleKeys("exit", ui.StopLoop)
+	
 	ui.Handle("/sys/wnd/resize", func(e ui.Event) {
 		ui.Clear()
 		ui.Render(m)

@@ -59,7 +59,7 @@ func NewAllContainers(grid *compact.CompactGrid,
 		menuItems: []MenuItem{
 			{"🐳 Publisher", ""},
 			{"📦 Delete Containers", ""},
-			{"🗂️ Delete Images", ""},
+			{"💿 Delete Images", ""},
 			{"💾 Delete Volumes", ""},
 		},
 		selectedIndex: 0,
@@ -623,7 +623,7 @@ func (a *AllContainers) selectMenuItem() bool {
 			a.currentMode = "containers"
 			a.resourceType = "containers"
 			go a.loadContainers()
-		case "🗂️ Delete Images":
+		case "💿 Delete Images":
 			a.currentMode = "images"
 			a.resourceType = "images"
 			go a.loadImages()
