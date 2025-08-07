@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 # a simple install script for ctop
 
-set -euo pipefail
-IFS=$'\n\t'
-
 KERNEL=$(uname -s)
 
 # Color definitions (BLUE is defined but unused in the original script)
@@ -41,48 +38,22 @@ function extract_url() {
   done <<< "$*"
 }
 
-exec_cmd() {
-    local url="$1"
-    local output_file="$2"
-    
-    # Check if wget is installed
-    if command -v wget &> /dev/null; then
-        output "Using wget..."
-        if [ -n "$output_file" ]; then
-            wget -q "$url" -O "$output_file"
-        else
-            wget -q --show-progress "$url"
-        fi
-    
-    elif command -v curl &> /dev/null; then
-        output "Using curl..."
-        if [ -n "$output_file" ]; then
-            curl "$url" -o "$output_file"
-        else
-            curl -# -O "$url"
-        fi
-    else
-        log_error "Error: Neither wget nor curl are installed."
-        exit 1
-    fi
-}
-
 case $KERNEL in
   Linux) MATCH_BUILD="linux-amd64" ;;
   Darwin) MATCH_BUILD="darwin-amd64" ;;
   *)
-    log_error "platform not supported by this install script"
+    log_error "Platform not supported by this install script"
     exit 1
     ;;
 esac
 
-# for req in curl wget; do
-#   command_exists "$req" || {
-#     output "missing required $req binary"
-#     req_failed=1
-#   }
-# done
-# [ "$req_failed" = 1 ] && exit 1
+for req in curl wget; do
+  command_exists "$req" || {
+    output "Missing required $req binary"
+    req_failed=1
+  }
+done
+[ "$req_failed" = 1 ] && exit 1
 
 sh_c='sh -c'
 if [[ $EUID -ne 0 ]]; then
@@ -101,30 +72,30 @@ fi
 TMP=$(mktemp -d "${TMPDIR:-/tmp}/ctop.XXXXX")
 cd "${TMP}" || exit
 
-output "fetching latest release info"
+output "Fetching latest release info"
 resp=$(curl -s https://api.github.com/repos/Betzalel75/ctop/releases/latest)
 
-output "fetching release checksums"
+output "Fetching release checksums"
 checksum_url=$(extract_url sha256sums.txt "$resp")
-exec_cmd "$checksum_url" "sha256sums.txt"
+wget -q "$checksum_url" -O sha256sums.txt
 
 # skip if latest already installed
 cur_ctop=$(command -v ctop 2> /dev/null)
 if [[ -n "$cur_ctop" ]]; then
   cur_sum=$(sha256sum "$cur_ctop" | sed 's/ .*//')
   (grep -q "$cur_sum" sha256sums.txt) && {
-    output "already up-to-date"
+    output "ctop is already up-to-date"
     exit 0
   }
 fi
 
-output "fetching latest ctop"
+output "Fetching latest ctop"
 url=$(extract_url "$MATCH_BUILD" "$resp")
-exec_cmd "$url"
+wget -q --show-progress "$url"
 (sha256sum -c --quiet --ignore-missing sha256sums.txt) || exit 1
 
-output "installing to /usr/local/bin"
+output "Installing to /usr/local/bin"
 chmod +x ctop-*
 $sh_c "mv ctop-* /usr/local/bin/ctop"
 
-output "done!"
+output "Installation complete!"
