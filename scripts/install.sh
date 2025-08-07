@@ -47,7 +47,7 @@ exec_cmd() {
     
     # Check if wget is installed
     if command -v wget &> /dev/null; then
-        echo "Using wget..."
+        output "Using wget..."
         if [ -n "$output_file" ]; then
             wget -q "$url" -O "$output_file"
         else
@@ -55,7 +55,7 @@ exec_cmd() {
         fi
     
     elif command -v curl &> /dev/null; then
-        echo "Using curl..."
+        output "Using curl..."
         if [ -n "$output_file" ]; then
             curl "$url" -o "$output_file"
         else
@@ -76,13 +76,13 @@ case $KERNEL in
     ;;
 esac
 
-for req in curl wget; do
-  command_exists "$req" || {
-    output "missing required $req binary"
-    req_failed=1
-  }
-done
-[ "$req_failed" = 1 ] && exit 1
+# for req in curl wget; do
+#   command_exists "$req" || {
+#     output "missing required $req binary"
+#     req_failed=1
+#   }
+# done
+# [ "$req_failed" = 1 ] && exit 1
 
 sh_c='sh -c'
 if [[ $EUID -ne 0 ]]; then
